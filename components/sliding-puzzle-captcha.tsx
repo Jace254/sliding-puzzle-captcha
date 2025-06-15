@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle, RotateCcw, Clock, Upload, Lightbulb } from "lucide-react"
+import { CheckCircle, RotateCcw, Clock, Upload, Lightbulb, XCircle } from "lucide-react"
 
 interface Coordinates {
   x: number
@@ -37,7 +37,7 @@ function getRowNumber(index: number | string, gridSize: number): number {
 
 class Board {
   gameState: Puzzle[] = []
-  emptyFieldIndex: number
+  emptyFieldIndex!: number
 
   constructor(
     public gridSize = 3,
@@ -254,6 +254,7 @@ export default function SlidingPuzzleCaptcha({
   const [forceUpdate, setForceUpdate] = useState(0)
   const [showStarterHint, setShowStarterHint] = useState(true)
   const [isSolving, setIsSolving] = useState(false)
+  const [solveClicked, setSolveClicked] = useState(false)
   const [wasSolvedByUser, setWasSolvedByUser] = useState(false)
 
   const gridSize = 3
@@ -291,6 +292,7 @@ export default function SlidingPuzzleCaptcha({
     setMoves(0)
     setIsCompleted(false)
     setIsVerified(false)
+    setSolveClicked(false)
     setWasSolvedByUser(false)
     setTimeElapsed(0)
     setForceUpdate((prev) => prev + 1)
@@ -313,7 +315,8 @@ export default function SlidingPuzzleCaptcha({
   // Handle solve button
   const handleSolve = async () => {
     if (!board || isCompleted || isSolving) return
-
+    
+    setSolveClicked(true)
     setIsSolving(true)
     setShowStarterHint(false)
 
@@ -383,12 +386,13 @@ export default function SlidingPuzzleCaptcha({
   // Check completion
   useEffect(() => {
     if (board && board.isSolved() && !isCompleted) {
+      console.log(solveClicked)
+      if (!solveClicked) {
+        setWasSolvedByUser(true)
+      }
       setIsCompleted(true)
 
       // Only set as solved by user if not currently auto-solving
-      if (!isSolving) {
-        setWasSolvedByUser(true)
-      }
 
       // Set verification regardless of how it was solved
       setTimeout(() => {
@@ -439,10 +443,14 @@ export default function SlidingPuzzleCaptcha({
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center gap-2">
             {isVerified ? (
-              <>
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                Verification Complete
-              </>
+                <>
+                {wasSolvedByUser ? (
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                ) : (
+                  <XCircle className="w-5 h-5 text-red-500" />
+                )}
+                {wasSolvedByUser ? "Verification Complete" : "Verification Failed"}
+                </>
             ) : (
               "Sliding Puzzle CAPTCHA"
             )}
@@ -451,7 +459,7 @@ export default function SlidingPuzzleCaptcha({
             {isVerified
               ? wasSolvedByUser
                 ? "You have been verified as human!"
-                : "You have been verified as a dumb human!"
+                : "You are pretty dumb, even for a human... Try again!"
               : "Arrange the tiles to complete the image"}
           </p>
         </CardHeader>
@@ -533,7 +541,6 @@ export default function SlidingPuzzleCaptcha({
                   const isFirstPossibleMove = showStarterHint && isPossibleMove && index === board.getPossibleMoves()[0]
 
                   return (
-                    <>
                       <div
                         key={`${value}-${forceUpdate}`}
                         className={`absolute border border-border transition-all duration-200 rounded-md ${
@@ -557,14 +564,13 @@ export default function SlidingPuzzleCaptcha({
                         onClick={() => handleTileClick(value)}
                         data-value={value}
                       />
-                    </>
                   )
                 })}
               </div>
             </div>
 
             {/* Completion Overlay */}
-            {isCompleted && wasSolvedByUser && (
+            {isCompleted && (
               <div className="z-10 absolute inset-0 bg-black/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
                 <div className="p-6 text-center max-w-xs mx-4">
                   <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
@@ -625,7 +631,6 @@ export default function SlidingPuzzleCaptcha({
                 {isSolving ? (
                   <>
                     Solving
-                    <AnimatedDots />
                   </>
                 ) : (
                   "Solve"
@@ -633,7 +638,7 @@ export default function SlidingPuzzleCaptcha({
               </Button>
             )}
 
-            {isVerified && (
+            {isVerified && wasSolvedByUser && (
               <Button className="flex-1" size="sm" onClick={handleContinue}>
                 Continue
               </Button>

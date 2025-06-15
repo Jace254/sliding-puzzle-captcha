@@ -1,6 +1,6 @@
 "use client"
 
-import SlidingPuzzleCaptcha from "../sliding-puzzle-captcha"
+import SlidingPuzzleCaptcha from "../components/sliding-puzzle-captcha"
 
 export default function Page() {
   return (
