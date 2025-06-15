@@ -9,4 +9,4 @@
 
 View Live Project at:
 
-**[https://vercel.com/jace254s-projects/v0-sliding-puzzle-captcha](https://sliding-puzzle-captcha.joash.me)**
+**[sliding-puzzle-captcha.joash.me](https://sliding-puzzle-captcha.joash.me)**
