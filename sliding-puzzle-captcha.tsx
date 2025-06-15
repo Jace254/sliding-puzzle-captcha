@@ -385,13 +385,18 @@ export default function SlidingPuzzleCaptcha({
     if (board && board.isSolved() && !isCompleted) {
       setIsCompleted(true)
 
+      // Only set as solved by user if not currently auto-solving
+      if (!isSolving) {
+        setWasSolvedByUser(true)
+      }
+
       // Set verification regardless of how it was solved
       setTimeout(() => {
         setIsVerified(true)
         onVerificationComplete?.()
       }, 1000)
     }
-  }, [board, forceUpdate, isCompleted, onVerificationComplete])
+  }, [board, forceUpdate, isCompleted, onVerificationComplete, isSolving])
 
   // Initialize on mount
   useEffect(() => {
@@ -628,7 +633,7 @@ export default function SlidingPuzzleCaptcha({
               </Button>
             )}
 
-            {isVerified && wasSolvedByUser && (
+            {isVerified && (
               <Button className="flex-1" size="sm" onClick={handleContinue}>
                 Continue
               </Button>
