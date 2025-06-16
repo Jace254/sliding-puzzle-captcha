@@ -439,7 +439,7 @@ export default function SlidingPuzzleCaptcha({
 
   return (
     <div className="p-2.5 bg-gray-500/20 backdrop-blur-md rounded-2xl border border-white/20 shadow-xl">
-      <Card className="w-full max-w-md mx-auto dark bg-card text-card-foreground border-border">
+      <Card className="w-full md:max-w-md max-w-full max-md:h-full mx-auto dark bg-card text-card-foreground border-border">
         <CardHeader className="text-center">
           <CardTitle className="flex items-center justify-center gap-2">
             {isVerified ? (
