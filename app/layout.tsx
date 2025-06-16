@@ -3,7 +3,7 @@ import './globals.css'
 import { PostHogProvider } from '../components/PostHogProvider'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
+  title: 'Sliding Puzzle Captcha',
   description: 'Created with v0',
   generator: 'v0.dev',
 }
