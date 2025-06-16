@@ -1,44 +1,9 @@
 "use client"
 
-import posthog from "posthog-js"
-import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react"
-import { Suspense, useEffect } from "react"
-import { usePathname, useSearchParams } from "next/navigation"
+import type React from "react"
 
-function SuspendedPostHogPageView() {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const posthogClient = usePostHog()
-
-  useEffect(() => {
-    if (posthogClient) {
-      posthogClient.capture('$pageview', {
-        path: pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''),
-      })
-    }
-  }, [posthogClient, pathname, searchParams])
-
-  return null
-}
-
+// Simple placeholder provider without any analytics for now
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-      api_host: "/ingest",
-      ui_host: "https://us.posthog.com",
-      capture_pageview: 'history_change',
-      capture_pageleave: true,
-      capture_exceptions: true,
-      debug: process.env.NODE_ENV === "development",
-    })
-  }, [])
-
-  return (
-    <PHProvider client={posthog}>
-      <Suspense fallback={null}>
-        <SuspendedPostHogPageView />
-      </Suspense>
-      {children}
-    </PHProvider>
-  )
+  // No analytics tracking for now
+  return <>{children}</>
 }
