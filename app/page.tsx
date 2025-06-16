@@ -1,7 +1,6 @@
 "use client"
 
 import SlidingPuzzleCaptcha from "../components/sliding-puzzle-captcha"
-import { Button } from "../components/ui/button"
 import { Github } from "lucide-react"
 
 export default function Page() {
